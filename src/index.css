@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #5988ef;
+}
+@layer base {
+  body {
+    font-family: "Inter", sans-serif;
+  }
+}
