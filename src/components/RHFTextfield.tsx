@@ -8,6 +8,7 @@ type RHFTextFieldProps = {
   type?: React.HTMLInputTypeAttribute;
   rules?: RegisterOptions<FieldValues, string>;
   numeric?: boolean;
+  disabled?: boolean;
 };
 
 export default function RHFTextField({
@@ -17,6 +18,7 @@ export default function RHFTextField({
   type = "text",
   rules,
   numeric = false,
+  disabled = false,
 }: RHFTextFieldProps) {
   const {
     register,
@@ -43,6 +45,7 @@ export default function RHFTextField({
       <input
         type={type}
         placeholder={placeholder}
+        disabled={disabled}
         {...register(name, registerOptions)}
         onInput={(e: React.FormEvent<HTMLInputElement>) => {
           if (numeric) {
@@ -50,7 +53,11 @@ export default function RHFTextField({
             input.value = input.value.replace(/[^0-9]/g, "");
           }
         }}
-        className={`w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 ${error ? "border-red-500" : "border-gray-300"}`}
+        className={`w-full px-3 py-1.5 border rounded-md outline-none
+          focus:ring-2 focus:ring-blue-500
+          disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+          ${error ? "border-red-500" : "border-gray-300"}
+        `}
       />
 
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
