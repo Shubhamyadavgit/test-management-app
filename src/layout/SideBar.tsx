@@ -72,7 +72,16 @@ export default function Sidebar({
       )}
 
       <aside
-        className={`fixed left-0 top-0 h-screen bg-gray-50 border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out${sidebarWidth}${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+        className={`
+          fixed left-0 top-0 h-screen bg-gray-50 border-r border-gray-200 z-50
+          transform transition-transform duration-300 ease-in-out
+
+          ${sidebarWidth}
+
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+
+          lg:translate-x-0
+        `}
       >
         <div className="h-16 flex items-center border-b border-gray-200 px-6">
           <img
@@ -84,7 +93,12 @@ export default function Sidebar({
 
         <div className="flex h-[calc(100vh-64px)] overflow-hidden">
           <div
-            className={`border-r border-gray-200 flex flex-col py-4 gap-2 transition-all duration-300${isQuestionsVariant ? "w-20 items-center" : "w-64 px-3"}`}
+            className={`
+              border-r border-gray-200
+              flex flex-col py-4 gap-2 transition-all duration-300
+
+              ${isQuestionsVariant ? "w-20 items-center" : "w-64 px-3"}
+            `}
           >
             {menuItems.map((item) => (
               <NavLink
@@ -93,9 +107,18 @@ export default function Sidebar({
                 onClick={() => onClose()}
                 className={({ isActive }) => `
                   flex items-center
-                  ${isQuestionsVariant ? "justify-center p-3" : "gap-3 px-3 py-2.5"}
+                  ${
+                    isQuestionsVariant
+                      ? "justify-center p-3"
+                      : "gap-3 px-3 py-2.5"
+                  }
                   rounded-lg transition
-                  ${isActive ? "bg-indigo-50 text-indigo-600" : "text-gray-600 hover:bg-gray-100"}
+
+                  ${
+                    isActive
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }
                 `}
               >
                 {item.icon}
@@ -106,6 +129,7 @@ export default function Sidebar({
               </NavLink>
             ))}
           </div>
+
           {isQuestionsVariant && (
             <div className="w-[260px] border-r border-gray-200">
               <QuestionSidebar
@@ -160,7 +184,19 @@ function QuestionSidebar({
                 setCurrentIndex?.(index);
                 onClose();
               }}
-              className={`flex justify-between items-center px-3 py-2 rounded-lg border cursor-pointer transition ${active ? "border-indigo-500 bg-indigo-50 text-indigo-700" : completed ? "border-green-500 bg-green-50 text-green-700" : "border-gray-200 text-gray-400"}`}
+              className={`
+                flex justify-between items-center
+                px-3 py-2 rounded-lg border
+                cursor-pointer transition
+
+                ${
+                  active
+                    ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                    : completed
+                      ? "border-green-500 bg-green-50 text-green-700"
+                      : "border-gray-200 text-gray-400"
+                }
+              `}
             >
               Question {index + 1}
               <span className="text-sm">›</span>
