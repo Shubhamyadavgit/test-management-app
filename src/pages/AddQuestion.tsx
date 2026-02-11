@@ -12,7 +12,7 @@ import { FiBarChart2, FiBookOpen, FiClock } from "react-icons/fi";
 import { MdOutlineTopic } from "react-icons/md";
 import RHFAutocomplete from "../components/RHFAutoComplete";
 import { bulkCreateQuestionsAsync } from "../redux/slices/questionSlice";
-import { fetchTestByIdAsync } from "../redux/slices/testSlice";
+import { fetchTestByIdAsync, updateTestAsync } from "../redux/slices/testSlice";
 import CircularLoader from "../components/CircularLoader";
 
 type QuestionForm = {
@@ -130,6 +130,31 @@ export default function AddQuestions() {
     }
 
     setCurrentIndex(nextIndex);
+  };
+
+  const handleSaveDraft = async () => {
+    if (!testId) return;
+
+    try {
+      const payload = {
+        id: testId,
+        data: {
+          status: "draft" as const,
+        },
+      };
+
+      const result = await dispatch(updateTestAsync(payload));
+
+      if (updateTestAsync.fulfilled.match(result)) {
+        toast.success("Saved as draft");
+        navigate("/dashboard");
+      } else {
+        toast.error("Failed to save draft");
+      }
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      toast.error("Something went wrong");
+    }
   };
 
   useEffect(() => {
@@ -440,6 +465,7 @@ export default function AddQuestions() {
             <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
               <button
                 type="button"
+                onClick={handleSaveDraft}
                 className="text-indigo-500 hover:text-indigo-700 text-sm"
               >
                 Save as Drafts
