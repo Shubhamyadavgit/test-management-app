@@ -23,8 +23,7 @@ export default function PublishTest() {
   const navigate = useNavigate();
   const { testId } = useParams();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { questions, totalQuestions } = useOutletContext<OutletContextType>();
+  const { totalQuestions } = useOutletContext<OutletContextType>();
 
   const { currentTest } = useSelector((s: RootState) => s.test);
 

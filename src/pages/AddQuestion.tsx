@@ -207,7 +207,7 @@ export default function AddQuestions() {
 
         <button
           onClick={() => navigate(`/tests/${testId}/publish`)}
-          className="bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium px-6 py-2 rounded-md shadow-sm transition w-full sm:w-auto"
+          className="bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium px-6 py-2 rounded-md shadow-sm transition w-full sm:w-auto cursor-pointer"
         >
           Publish
         </button>
@@ -466,7 +466,7 @@ export default function AddQuestions() {
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="text-indigo-500 hover:text-indigo-700 text-sm"
+                className="text-indigo-500 hover:text-indigo-700 text-sm cursor-pointer"
               >
                 Save as Drafts
               </button>
