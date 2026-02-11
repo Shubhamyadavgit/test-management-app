@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const baseURL =
+  import.meta.env.MODE === "development"
+    ? "/api" // dev uses proxy
+    : import.meta.env.VITE_API_BASE_URL; // production uses real backend
+
 const api = axios.create({
-  baseURL: "/api", // IMPORTANT: use proxy path
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -24,7 +29,6 @@ api.interceptors.request.use(
 // RESPONSE INTERCEPTOR
 api.interceptors.response.use(
   (response) => response,
-
   (error) => {
     const message =
       error?.response?.data?.message ||
