@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://admin-moderator-backend-production.up.railway.app/api"
-    }
-  ]
-}
