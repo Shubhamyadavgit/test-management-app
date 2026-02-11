@@ -377,7 +377,7 @@ export default function CreateTest() {
           <button
             type="button"
             onClick={() => navigate("/dashboard")}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition cursor-pointer"
           >
             Cancel
           </button>
@@ -385,7 +385,7 @@ export default function CreateTest() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full sm:w-auto px-8 py-2.5 rounded-lg text-white flex items-center justify-center gap-2 min-w-[120px] transition ${
+            className={`w-full sm:w-auto px-8 py-2.5 rounded-lg text-white flex items-center justify-center gap-2 min-w-[120px] transition cursor-pointer ${
               loading
                 ? "bg-indigo-400 cursor-not-allowed"
                 : "bg-indigo-500 hover:bg-indigo-600"

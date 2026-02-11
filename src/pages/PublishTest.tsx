@@ -184,7 +184,7 @@ export default function PublishTest() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab as typeof activeTab)}
-              className={`px-4 py-2 text-sm font-medium rounded-md capitalize transition whitespace-nowrap
+              className={`px-4 py-2 text-sm font-medium rounded-md capitalize transition whitespace-nowrap cursor-pointer
                 ${
                   activeTab === tab
                     ? "bg-white text-indigo-600 shadow-sm"
@@ -303,7 +303,7 @@ export default function PublishTest() {
           <div className="flex flex-col sm:flex-row sm:justify-end gap-4 mt-8 pt-6 border-t border-gray-100">
             <button
               onClick={() => navigate(-1)}
-              className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition order-2 sm:order-1"
+              className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition order-2 sm:order-1 cursor-pointer"
             >
               Cancel
             </button>

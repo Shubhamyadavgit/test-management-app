@@ -478,7 +478,7 @@ export default function AddQuestions() {
                   className={`
                     flex items-center justify-center gap-2
                     bg-indigo-500 text-white px-6 py-2 rounded-md
-                    transition w-full sm:w-auto
+                    transition w-full sm:w-auto cursor-pointer
                     ${
                       loading
                         ? "opacity-70 cursor-not-allowed"
