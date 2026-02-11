@@ -24,7 +24,7 @@ export default function Login() {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading } = useSelector((state: RootState) => state.auth);
 
   const onSubmit = async (data: LoginForm) => {
     const result = await dispatch(loginAsync(data));
@@ -85,11 +85,9 @@ export default function Login() {
                   }}
                 />
 
-                {error && <p className="text-red-500 text-sm">{error}</p>}
-
                 <button
                   type="button"
-                  className="text-primary text-sm hover:underline"
+                  className="text-primary text-sm hover:underline cursor-pointer"
                 >
                   Forgot password?
                 </button>
