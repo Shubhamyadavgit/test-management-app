@@ -121,7 +121,10 @@ export default function Dashboard() {
                         <FiEye size={18} />
                       </button>
 
-                      <button className="p-2 rounded-lg hover:bg-green-50 text-green-600 transition-colors">
+                      <button
+                        onClick={() => navigate(`/tests/${test.id}/edit`)}
+                        className="p-2 rounded-lg hover:bg-green-50 text-green-600 transition-colors"
+                      >
                         <FiEdit size={18} />
                       </button>
 

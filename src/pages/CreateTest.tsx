@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FormProvider, useForm, Controller } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import type { AppDispatch, RootState } from "../redux/store";
@@ -8,7 +8,12 @@ import type { AppDispatch, RootState } from "../redux/store";
 import { fetchSubjectsAsync } from "../redux/slices/subjectSlice";
 import { fetchTopicsAsync } from "../redux/slices/topicSlice";
 import { fetchSubTopicsAsync } from "../redux/slices/subTopicSlice";
-import { createTestAsync } from "../redux/slices/testSlice";
+import {
+  createTestAsync,
+  fetchTestByIdAsync,
+  updateTestAsync,
+} from "../redux/slices/testSlice";
+import type { TestDifficulty, TestType } from "../types/test";
 
 import RHFAutocomplete from "../components/RHFAutoComplete";
 import RHFTextField from "../components/RHFTextfield";
@@ -22,7 +27,7 @@ type CreateTestForm = {
   topics: string[];
   sub_topics: string[];
 
-  difficulty: "easy" | "medium" | "hard";
+  difficulty: TestDifficulty;
 
   correct_marks: number;
   wrong_marks: number;
@@ -32,17 +37,20 @@ type CreateTestForm = {
   total_questions: number;
   total_marks: number;
 
-  type: "chapterwise" | "pyq" | "mocktest" | "dailychallenge" | "uncategorised";
+  type: TestType;
 };
 
 export default function CreateTest() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const { testId } = useParams();
+  const isInitialized = useRef(false);
+  const isEdit = Boolean(testId);
 
   const { subjects } = useSelector((s: RootState) => s.subjects);
   const { topics } = useSelector((s: RootState) => s.topics);
   const { subTopics } = useSelector((s: RootState) => s.subTopics);
-  const { loading } = useSelector((s: RootState) => s.test);
+  const { loading, currentTest } = useSelector((s: RootState) => s.test);
 
   const methods = useForm<CreateTestForm>({
     defaultValues: {
@@ -73,18 +81,96 @@ export default function CreateTest() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (selectedSubject) dispatch(fetchTopicsAsync(selectedSubject));
-  }, [selectedSubject, dispatch]);
+    if (!selectedSubject) return;
+    if (isEdit && !isInitialized.current) return;
+
+    dispatch(fetchTopicsAsync(selectedSubject));
+  }, [selectedSubject, dispatch, isEdit]);
 
   useEffect(() => {
-    if (selectedTopics.length) dispatch(fetchSubTopicsAsync(selectedTopics));
-  }, [selectedTopics, dispatch]);
+    if (!selectedTopics.length) return;
+
+    if (isEdit && !isInitialized.current) return;
+
+    dispatch(fetchSubTopicsAsync(selectedTopics));
+  }, [selectedTopics, dispatch, isEdit]);
 
   useEffect(() => {
     const total = (Number(correctMarks) || 0) * (Number(totalQuestions) || 0);
 
     methods.setValue("total_marks", total);
   }, [correctMarks, totalQuestions, methods]);
+
+  useEffect(() => {
+    if (testId) {
+      dispatch(fetchTestByIdAsync(testId));
+    }
+  }, [dispatch, testId]);
+
+  useEffect(() => {
+    if (currentTest && isEdit && subjects.length) {
+      const subjectObj = subjects.find((s) => s.name === currentTest.subject);
+
+      const subjectId = subjectObj?.id ?? "";
+
+      methods.reset({
+        name: currentTest.name,
+        subject: subjectId,
+        topics: [],
+        sub_topics: [],
+        difficulty: currentTest.difficulty,
+        correct_marks: currentTest.correct_marks,
+        wrong_marks: currentTest.wrong_marks,
+        unattempt_marks: currentTest.unattempt_marks,
+        total_time: currentTest.total_time,
+        total_questions: currentTest.total_questions,
+        total_marks: currentTest.total_marks,
+        type: currentTest.type,
+      });
+
+      if (subjectId) {
+        dispatch(fetchTopicsAsync(subjectId));
+      }
+
+      isInitialized.current = true;
+    }
+  }, [currentTest, isEdit, subjects, dispatch, methods]);
+
+  useEffect(() => {
+    if (currentTest?.topics?.length && topics.length) {
+      const topicIds = topics
+        .filter((t) => currentTest.topics.includes(t.name))
+        .map((t) => t.id);
+
+      methods.setValue("topics", topicIds);
+
+      dispatch(fetchSubTopicsAsync(topicIds));
+    }
+  }, [currentTest, topics, dispatch, methods]);
+
+  useEffect(() => {
+    if (currentTest && isEdit && subTopics.length) {
+      const subTopicIds = subTopics
+        .filter((st) => currentTest.sub_topics?.includes(st.name))
+        .map((st) => st.id);
+
+      methods.setValue("sub_topics", subTopicIds);
+    }
+  }, [currentTest, isEdit, subTopics, methods]);
+
+  useEffect(() => {
+    if (currentTest && isEdit && topics.length) {
+      const topicIds = topics
+        .filter((t) => currentTest.topics?.includes(t.name))
+        .map((t) => t.id);
+
+      methods.setValue("topics", topicIds);
+
+      if (topicIds.length) {
+        dispatch(fetchSubTopicsAsync(topicIds));
+      }
+    }
+  }, [currentTest, isEdit, topics, dispatch, methods]);
 
   const subjectOptions = subjects.map((s) => ({
     label: s.name,
@@ -110,15 +196,40 @@ export default function CreateTest() {
   ];
 
   const onSubmit = async (data: CreateTestForm) => {
-    const payload = { ...data, status: "draft" };
+    const payload = {
+      ...data,
+      status: "draft" as const,
+    };
 
-    const result = await dispatch(createTestAsync(payload));
+    try {
+      if (isEdit && testId) {
+        const result = await dispatch(
+          updateTestAsync({
+            id: testId,
+            data: payload,
+          }),
+        );
 
-    if (createTestAsync.fulfilled.match(result)) {
-      toast.success("Test created");
-      navigate(`/tests/${result.payload.id}/add-questions`);
-    } else {
-      toast.error("Failed to create test");
+        if (updateTestAsync.fulfilled.match(result)) {
+          toast.success("Test updated successfully");
+
+          navigate(`/tests/${testId}/add-questions`);
+        } else {
+          toast.error("Failed to update test");
+        }
+      } else {
+        const result = await dispatch(createTestAsync(payload));
+
+        if (createTestAsync.fulfilled.match(result)) {
+          toast.success("Test created");
+
+          navigate(`/tests/${result.payload.id}/add-questions`);
+        } else {
+          toast.error("Failed to create test");
+        }
+      }
+    } catch {
+      toast.error("Something went wrong");
     }
   };
 

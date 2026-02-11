@@ -1,6 +1,15 @@
+export type TestDifficulty = "easy" | "medium" | "hard";
+
+export type TestType =
+  | "chapterwise"
+  | "pyq"
+  | "mocktest"
+  | "dailychallenge"
+  | "uncategorised";
+
 export type CreateTestPayload = {
   name: string;
-  type: string;
+  type: TestType;
   subject: string;
 
   topics: string[];
@@ -10,7 +19,7 @@ export type CreateTestPayload = {
   wrong_marks: number;
   unattempt_marks: number;
 
-  difficulty: string;
+  difficulty: TestDifficulty;
   total_time: number;
   total_marks: number;
   total_questions: number;
@@ -22,8 +31,8 @@ export type CreateTestResponse = {
   id: string;
   name: string;
   subject: string;
-  type: string;
-  difficulty: string;
+  type: TestType;
+  difficulty: TestDifficulty;
   correct_marks: number;
   wrong_marks: number;
   unattempt_marks: number;

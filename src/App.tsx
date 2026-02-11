@@ -16,6 +16,7 @@ export default function App() {
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tests/create" element={<CreateTest />} />
+          <Route path="/tests/:testId/edit" element={<CreateTest />} />
           <Route
             path="/tests/:testId/add-questions"
             element={<AddQuestions />}
