@@ -1,12 +1,13 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: "/api", // IMPORTANT: use proxy path
   headers: {
     "Content-Type": "application/json",
   },
 });
 
+// REQUEST INTERCEPTOR
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -20,6 +21,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+// RESPONSE INTERCEPTOR
 api.interceptors.response.use(
   (response) => response,
 
@@ -29,7 +31,14 @@ api.interceptors.response.use(
       error?.response?.data?.error ||
       error?.message ||
       "Something went wrong";
-    console.log("message", message);
+
+    console.error("API Error:", message);
+
+    if (error?.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
     return Promise.reject(error);
   },
 );
